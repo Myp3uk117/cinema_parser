@@ -60,3 +60,5 @@ let temp_film_1 = prompt('Один из последних просмотрен�
 let temp_score_1 = +prompt('Какую оценку поставите от 1 до 10?','7')
 personalMovieDB.movies[temp_film_0] = temp_score_0
 personalMovieDB.movies[temp_film_1] = temp_score_1
+
+var lol = 'lol'
