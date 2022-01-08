@@ -13,8 +13,16 @@
 4) Потренироваться и переписать цикл еще двумя способами*/
 
 'use strict';
-
-const numberOfFilms = +prompt('Сколько фильмов вы уже посмотрели?','')
+let numberOfFilms
+while (1){
+    numberOfFilms = +prompt('Сколько фильмов вы уже посмотрели?','')
+    if (isNaN(numberOfFilms)){
+        alert('Пожалуйста, введите корректное число.')
+        continue;
+    }
+    break;
+}
+ 
 let personalMovieDB = {
     count: numberOfFilms,
     movies: {},
@@ -68,10 +76,103 @@ function parseString2(str) {
 let movieTitles = parseString2(textToParse_0+textToParse_1+textToParse_2)
 console.log('movieTitles:', movieTitles)
 
+function validate(movieName) {
+    if (movieName === '') {
+        alert ('Пожалуйста, введите корректное название фильма.')
+        return false
+    }
+    if (movieName.length > 50) {
+        alert('Название фильма слишком длинное. Пожалуйста, введите корректное название.')
+        return false
+    }
+    return true
+}
+
 for (let countMovie = 0; countMovie < numberOfFilms; countMovie++){
-    let tempMovie = prompt('Один из последних просмотренных фильмов?', movieTitles[Math.floor(Math.random()*(movieTitles.length-1))])
+    let tempMovie = prompt(`Введите ${countMovie+1}-й просмотренный фильм.`, movieTitles[Math.floor(Math.random()*(movieTitles.length-1))])
+    
+    if (tempMovie === null){
+        personalMovieDB.count = countMovie 
+        break
+    }
+    if (!validate(tempMovie)) {
+        countMovie--
+        continue
+    }
+    if (personalMovieDB.movies[tempMovie] != undefined) {
+        countMovie--
+        if (!(confirm('Фильм уже есть в базе. Нажмите ОК, чтобы обновить оценку, либо "Отмена", чтобы ввести другое название.'))){
+            continue
+        }
+    }
+
     let tempScore = +prompt('Какую оценку поставите от 1 до 10?','7')
     personalMovieDB.movies[tempMovie] = tempScore
 }
 
 console.log('personalMovieDB:', personalMovieDB)
+const moviesNameEndings = ['фильмов', 'фильма', 'фильм']
+let numberOfFilmsStr = String(personalMovieDB.count) 
+let numberOfFilms1 = personalMovieDB.count
+
+let ending = ''
+// if (numberOfFilmsStr[numberOfFilmsStr.length-2] == '1'){
+//     ending = moviesNameEndings[0]
+// } else {
+//     switch (numberOfFilmsStr[numberOfFilmsStr.length-1]){
+//         case '0':
+//         case '5':
+//         case '6':
+//         case '7':
+//         case '8':
+//         case '9':
+//             ending = moviesNameEndings[0]
+//             break;
+//         case '2':
+//         case '3':
+//         case '4':
+//             ending = moviesNameEndings[1]
+//             break;
+//         default:
+//             ending = moviesNameEndings[2]
+//     }
+// }
+
+let digitToEnding = [
+    'фильмов',
+    'фильм',
+    'фильма',
+    'фильма',
+    'фильма',
+    'фильмов',
+    'фильмов',
+    'фильмов',
+    'фильмов',
+    'фильмов',
+]
+
+var decimals = numberOfFilms1 % 100
+if (decimals >= 10 && decimals <= 20) {
+    ending = digitToEnding[0]
+} else {
+    let endDigit = decimals % 10
+    ending = digitToEnding[endDigit]
+}
+
+let scoresReview = ``
+for (let movie in personalMovieDB.movies){
+    scoresReview += `Вы поставили фильму \"${movie}\" оценку ${personalMovieDB.movies[movie]}.\n`
+}
+console.log('scoresReview:', scoresReview)
+
+let userStringReview = ''
+if (personalMovieDB.count < 20){
+    userStringReview = 'Вы просмотрели довольно мало фильмов.'
+} else if (personalMovieDB.count >= 20 && personalMovieDB.count <=50){
+    userStringReview = 'Вы просмотрели довольно много фильмов.'
+} else if (personalMovieDB.count > 50){
+    userStringReview = 'Вы настоящий киноман!'
+}
+
+alert (`Вы посмотрели ${personalMovieDB.count + ' ' + ending + '.'}\n${scoresReview}\n${userStringReview}`)
+
