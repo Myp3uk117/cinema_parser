@@ -87,27 +87,27 @@ function validate(movieName) {
     }
     return true
 }
-
-for (let countMovie = 0; countMovie < numberOfFilms; countMovie++){
-    let tempMovie = prompt(`Введите ${countMovie+1}-й просмотренный фильм.`, movieTitles[Math.floor(Math.random()*(movieTitles.length-1))])
-    
+let countMovie = 0
+let tempMovie = 1
+while (countMovie < personalMovieDB.count){
+    tempMovie = prompt(`Введите название фильма, которому хотите поставить оценку. Количество уже оцененных фильмов: ${countMovie}`, movieTitles[Math.floor(Math.random()*(movieTitles.length-1))])
     if (tempMovie === null){
-        personalMovieDB.count = countMovie 
         break
     }
     if (!validate(tempMovie)) {
-        countMovie--
         continue
     }
     if (personalMovieDB.movies[tempMovie] != undefined) {
-        countMovie--
         if (!(confirm('Фильм уже есть в базе. Нажмите ОК, чтобы обновить оценку, либо "Отмена", чтобы ввести другое название.'))){
             continue
         }
+        // лучше убрать эту строку, т.к. мы хотим менять эту переменную только при записи нового фильма
+        countMovie--
     }
 
     let tempScore = +prompt('Какую оценку поставите от 1 до 10?','7')
     personalMovieDB.movies[tempMovie] = tempScore
+    countMovie++
 }
 
 console.log('personalMovieDB:', personalMovieDB)
