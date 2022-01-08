@@ -26,18 +26,21 @@ let personalMovieDB = {
 let textToParse_0 = 'Похороны Коджо — 31 марта 2019 г. — «Когда мужчину бросают умирать на незаконном золотом руднике, его дочь путешествует по волшебному ландшафту, чтобы спасти его».Мерата: как мама деколонизировала экран — 12 мая 2019 г. — «Новозеландский киноархив Хепери Мита прослеживает кинематографическое наследие своей матери и выдающегося режиссера маори Мерата Мита».Горящая трость — 6 ноября 2019 г. — «В этом драматическом исследовании персонажей священник из небольшого городка Луизианы и один из его прихожан справляются с горем, алкоголизмом и кризисом веры».Тело помнит, когда мир открылся — 27 ноября 2019 г. — «После травмирующего события две женщины из числа коренного населения в Ванкувере сближаются и образуют прочную связь, несмотря на то, что они ведут разную жизнь».Иезавель — 16 января 2020 г. — «В период зарождения Интернета уязвимая женщина следует за своей сестрой в секс-индустрию в качестве модели веб-камеры, но ее внезапная популярность проверяет их связь».'
 let textToParse_1 = 'Остаток — 17 сентября 2020 г. — «Молодой сценарист возвращается в свой родной город, чтобы написать сценарий, основанный на его детстве, и обнаруживает, что его район облагорожен».Айну Мосир — 17 ноября 2020 г. — «Чуткий подросток-айну ищет духовную связь со своим недавно умершим отцом, ориентируясь на свою коренную идентичность в меняющемся мире».Забавный мальчик — 12 декабря 2020 г. — «Студент должен ориентироваться в вопросах сексуальности, идентичности и семьи в условиях социальных потрясений в Шри-Ланке 1970-х и 1980-х годов».Аляска — это драг — 31 декабря 2020 г. — «Измученный хулиганами, начинающая звезда сопротивления, работающая на консервном заводе на Аляске, становится опытным бойцом, и тренер по боксу приглашает на соревнования».'
 let textToParse_2 = 'В садах наших матерей — 7 мая 2021 г. — «Незапланированная беременность меняет беззаботную жизнь молодой женщины и ее соседки по квартире, поскольку они обнаруживают, что материнство-одиночка переживает трудности».Кузены — 22 июля 2021 г. — «Три кузена. Три жизни. Разделенные обстоятельствами, но связанные кровью ».Санкофа — 24 сентября 2021 г. — ремастер фильма Хайле Герима 1993 года в формате 4K».Любовь и ярость — 3 декабря 2021 г. — документальный фильм, в котором «рассказывается о кадрах местных художников, которые работают над расширением творческого потенциала коренных народов в постколониальном мире и делают свою карьеру без разрешения».'
+const regexGlobal = /(.*?) — (.*?)»\./g;
+const regexInner = /(.*?) — (.*?)»\./;
 
 function collectMovieTitles(parse_string){
     let arr_parse_string = parse_string.split('')
     let movie_list = []
-    for (let i = 0; i < arr_parse_string.length; i++){
+    for (let i = 0; i < arr_parse_string.length-2; i++){
         if (arr_parse_string[i] == ' ' && arr_parse_string[i+1] == '—' && arr_parse_string[i+2] == ' ' && +arr_parse_string[i+3] > 0){
             movie_list.push(arr_parse_string.splice(0,i).join(''))
-            for (let j = 145; j < arr_parse_string.length; j++){
+            for (let j = 75; j < arr_parse_string.length; j++){
                 if (arr_parse_string[j] == '»' && arr_parse_string[j+1] == '.'){
                     arr_parse_string.splice(0,j+2)
                     i = 0 
                     console.log('j:', j)
+                    console.log('movie_list.length:', movie_list.length)
                     break;
                 }
             }
@@ -53,10 +56,21 @@ let titlesPackThird = collectMovieTitles(textToParse_2)
 let movieTitles = titlesPackFirst.concat(titlesPackSecond.concat(titlesPackThird))
 console.log('movieTitles:', movieTitles)
 
+function regexParse(string){
+    const tempArray = []
+    const found = string.match(regexGlobal);
+    for (let elem of found){
+        tempArray.push(elem.match(regexInner)[1])
+    }    
+    return tempArray
+}
 
-let temp_film_0 = prompt('Один из последних просмотренных фильмов?', movieTitles[Math.floor(Math.random()*(movieTitles.length-1))])
-let temp_score_0 = +prompt('Какую оценку поставите от 1 до 10?','7')
-let temp_film_1 = prompt('Один из последних просмотренных фильмов?', movieTitles[Math.floor(Math.random()*(movieTitles.length-1))])
-let temp_score_1 = +prompt('Какую оценку поставите от 1 до 10?','7')
-personalMovieDB.movies[temp_film_0] = temp_score_0
-personalMovieDB.movies[temp_film_1] = temp_score_1
+console.log('regexParse(textToParse_0):', regexParse(textToParse_0+textToParse_1+textToParse_2))
+
+for (let countMovie = 0; countMovie < numberOfFilms; countMovie++){
+    let tempMovie = prompt('Один из последних просмотренных фильмов?', movieTitles[Math.floor(Math.random()*(movieTitles.length-1))])
+    let tempScore = +prompt('Какую оценку поставите от 1 до 10?','7')
+    personalMovieDB.movies[tempMovie] = tempScore
+}
+
+console.log('personalMovieDB:', personalMovieDB)
