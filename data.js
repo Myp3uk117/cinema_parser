@@ -2,6 +2,55 @@ function simplify(str){
     str = str.split(' ').join('').toLowerCase();
     return str;
 }
+function validate(movieName) {
+    if (movieName === '') {
+        alert('Пожалуйста, введите корректное название фильма.')
+        return false
+    }
+    if (movieName.length > 50) {
+        alert('Название фильма слишком длинное. Пожалуйста, введите корректное название.')
+        return false
+    }
+    return true
+}
+function parseString2(str) {
+    let checkpoint = 0
+    let movieNames = []
+    while (checkpoint < str.length) {
+        let cursor = checkpoint
+        while (str[cursor] != '—') {
+            cursor++
+        }
+        movieNames.push(str.substring(checkpoint, cursor - 1))
+        while (str[cursor] != "»") {
+            cursor++
+        }
+        checkpoint = cursor + 2
+    }
+    return movieNames;
+}
+function parseString(str) {
+    let movieList = []
+    let symbolIndex = 0,
+        nameMovieStart = 0,
+        nameMovieEnd = 0
+    while (symbolIndex < str.length) {
+        if (str[symbolIndex] == '—') {
+            nameMovieEnd = symbolIndex - 1
+            movieList.push(str.substring(nameMovieStart, nameMovieEnd))
+            console.log('str.substring(nameMovieStart, nameMovieEnd):', str.substring(nameMovieStart, nameMovieEnd))
+            while (1) {
+                symbolIndex++
+                if (str[symbolIndex] == '»') {
+                    nameMovieStart = symbolIndex + 2
+                    break;
+                }
+            }
+        }
+        symbolIndex++
+    }
+    return movieList
+}
 
 const arrDecimals = [
     'двадцать',
@@ -50,6 +99,12 @@ const digitToEnding = [
     'фильмов',
     'фильмов',
     'фильмов',
+]
+
+const moviesNameEndings = [
+    'фильмов', 
+    'фильма', 
+    'фильм'
 ]
 
 let strOneToHundred = arrNumbers.slice()
